@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 
 export default function Sidebar() {
   return (
-    <div className="h-screen bg-slate-900 text-white flex flex-col justify-between p-4 w-64">
+    <div className="h-screen bg-slate-900 text-white flex flex-col justify-between p-4 w-48">
       {/* Nome da empresa */}
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">Empresa XYZ</h1>
