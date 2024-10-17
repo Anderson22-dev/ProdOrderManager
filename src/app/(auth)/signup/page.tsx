@@ -1,6 +1,9 @@
-import { useEffect } from "react";
+import SignUpform from "@/components/pages/signup/SignUpForm";
 
 export default function SignUp() {
-  useEffect(() => {}, []);
-  return <p>Loading...</p>;
+  return (
+    <main className="flex items-center justify-center h-screen bg-slate-200">
+      <SignUpform />
+    </main>
+  );
 }

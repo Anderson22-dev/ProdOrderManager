@@ -5,30 +5,30 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignInUser } from "@/lib/signiInUser";
+import { signUpUser } from "@/lib/SignUpUser";
 
-const SignInUserFormSchema = z.object({
+const CreateUserFormSchema = z.object({
   login: z.string().min(1, "Campo Obrigatório"),
   password: z.string().min(1, "Campo Obrigatório"),
 });
 
-type CreateUserFormData = z.infer<typeof SignInUserFormSchema>;
+type CreateUserFormData = z.infer<typeof CreateUserFormSchema>;
 
-export default function SignInform() {
+export default function SignUpform() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateUserFormData>({
-    resolver: zodResolver(SignInUserFormSchema),
+    resolver: zodResolver(CreateUserFormSchema),
   });
 
   return (
     <form
       className="flex flex-col gap-4 bg-white w-[30rem] p-7 rounded-md border-[#E2E8F0] border-2"
-      onSubmit={handleSubmit(() => SignInUser)}
+      onSubmit={handleSubmit(() => signUpUser)}
     >
-      <h1 className="font-bold text-2xl text-center">Login</h1>
+      <h1 className="font-bold text-2xl text-center">Cadastrar</h1>
       <div>
         <Label className="text-sm">Login</Label>
         <Input
@@ -50,7 +50,7 @@ export default function SignInform() {
       </div>
 
       <Button type="submit" className="bg-[#1d4ed8]">
-        Entrar
+        Cadastrar
       </Button>
     </form>
   );
