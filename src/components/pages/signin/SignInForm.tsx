@@ -5,8 +5,10 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignInUser } from "@/lib/signiInUser";
-
+import { api } from "@/shared/services/api";
+import { useState } from "react";
+import { TailSpin } from "react-loading-icons";
+import { redirect } from "next/navigation";
 const SignInUserFormSchema = z.object({
   login: z.string().min(1, "Campo Obrigatório"),
   password: z.string().min(1, "Campo Obrigatório"),
@@ -22,11 +24,28 @@ export default function SignInform() {
   } = useForm<CreateUserFormData>({
     resolver: zodResolver(SignInUserFormSchema),
   });
+  const [loading, setLoading] = useState<boolean>();
+
+  async function SignInUser(data: CreateUserFormData) {
+    try {
+      setLoading(true);
+      const userData = await api.post("/auth/login", {
+        login: data.login,
+        password: data.password,
+      });
+      localStorage.setItem("token", userData.data.token);
+      redirect("/dashboard");
+    } catch (e) {
+      console.log("erro ao fazer login:", e);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <form
       className="flex flex-col gap-4 bg-white w-[30rem] p-7 rounded-md border-[#E2E8F0] border-2"
-      onSubmit={handleSubmit(() => SignInUser)}
+      onSubmit={handleSubmit(SignInUser)}
     >
       <h1 className="font-bold text-2xl text-center">Login</h1>
       <div>
@@ -50,7 +69,7 @@ export default function SignInform() {
       </div>
 
       <Button type="submit" className="bg-[#1d4ed8]">
-        Entrar
+        {loading ? <TailSpin className="w-5 h-5" /> : <p>Entrar</p>}
       </Button>
     </form>
   );
