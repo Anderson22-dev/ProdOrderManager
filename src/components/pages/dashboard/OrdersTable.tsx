@@ -10,29 +10,63 @@ import {
 import { api } from "@/shared/services/api";
 import { useState, useEffect } from "react";
 
-interface Order {
+type baseMaterialType = {
+  name: string;
+  unitType: string;
+};
+
+type MaterialType = {
+  id: string;
+  baseMaterial: baseMaterialType;
+  quantity: string;
+  totalAmount: null;
+  paidAmount: null;
+  remainingAmount: number;
+};
+
+type ProductType = {
+  id: string;
+  name: string;
+  productType: "INDUTOR" | "TRANSFORMADOR" | "FONTE";
+  productMaterials: MaterialType;
+};
+
+type Order = {
   ordem: number;
-  codigo: string;
-  client: string;
-  product: string;
-  qtd: number;
-  dataab: string;
-  datare: string;
-  datae: string;
+  id: string;
+  customer: string;
+  product: ProductType;
+  quantity: number;
+  openingDate: string;
+  lastReviewDate: string;
+  deliveryDate: string;
   status: string;
-}
+};
 
 export default function OrdersTable() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   async function getOrders() {
     try {
-      const { data: ordersFromApi } = await api.get("/prodOrder", {
+      const { data: ordersFromApi } = await api.get("/prodOrder/openOrders", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       setOrders(ordersFromApi);
+    } catch (error) {
+      console.error("Erro ao buscar os pedidos:", error);
+    }
+    try {
+      const { data: ordersFromApi } = await api.get(
+        "/prodOrder/completeOrders",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setOrders([...orders, ordersFromApi]);
     } catch (error) {
       console.error("Erro ao buscar os pedidos:", error);
     }
@@ -49,7 +83,7 @@ export default function OrdersTable() {
           {[
             "Ordem",
             "Código",
-            "Cliente",
+            "cliente",
             "Produto",
             "Qtd",
             "Data AB",
@@ -70,25 +104,25 @@ export default function OrdersTable() {
               {order.ordem}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.codigo}
+              {order.id}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.client}
+              {order.customer}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.product}
+              {order.product.name}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.qtd}
+              {order.quantity}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.dataab}
+              {order.openingDate}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.datare}
+              {order.lastReviewDate}
             </TableCell>
             <TableCell className="font-medium text-xs border">
-              {order.datae}
+              {order.deliveryDate}
             </TableCell>
             <TableCell className="font-medium text-xs border">
               {order.status}
