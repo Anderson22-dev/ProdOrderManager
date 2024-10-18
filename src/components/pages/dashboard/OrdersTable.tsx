@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -6,8 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { api } from "@/shared/services/api";
+import { useState, useEffect } from "react";
 
-// Tipagem reutilizada para os pedidos
 interface Order {
   ordem: number;
   codigo: string;
@@ -20,12 +22,25 @@ interface Order {
   status: string;
 }
 
-interface OrdersTableProps {
-  orders: Order[];
-}
+export default function OrdersTable() {
+  const [orders, setOrders] = useState<Order[]>([]);
 
-export default function OrdersTable({ orders }: OrdersTableProps) {
-  const cellClasses = "font-medium text-xs border";
+  async function getOrders() {
+    try {
+      const { data: ordersFromApi } = await api.get("/prodOrder", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setOrders(ordersFromApi);
+    } catch (error) {
+      console.error("Erro ao buscar os pedidos:", error);
+    }
+  }
+
+  useEffect(() => {
+    getOrders();
+  }, []);
 
   return (
     <Table>
@@ -51,15 +66,33 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
       <TableBody>
         {orders.map((order) => (
           <TableRow key={order.ordem} className="border">
-            <TableCell className={cellClasses}>{order.ordem}</TableCell>
-            <TableCell className={cellClasses}>{order.codigo}</TableCell>
-            <TableCell className={cellClasses}>{order.client}</TableCell>
-            <TableCell className={cellClasses}>{order.product}</TableCell>
-            <TableCell className={cellClasses}>{order.qtd}</TableCell>
-            <TableCell className={cellClasses}>{order.dataab}</TableCell>
-            <TableCell className={cellClasses}>{order.datare}</TableCell>
-            <TableCell className={cellClasses}>{order.datae}</TableCell>
-            <TableCell className={cellClasses}>{order.status}</TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.ordem}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.codigo}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.client}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.product}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.qtd}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.dataab}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.datare}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.datae}
+            </TableCell>
+            <TableCell className="font-medium text-xs border">
+              {order.status}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
