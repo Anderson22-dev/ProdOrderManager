@@ -1,6 +1,6 @@
+"use client";
 import Sidebar from "@/components/sidebar/SideBar";
 import React from "react";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default function ProtectedLayout({
@@ -8,7 +8,7 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (cookies().has("token") != true) {
+  if (!localStorage.getItem("token")) {
     return redirect("/signin");
   }
   return (

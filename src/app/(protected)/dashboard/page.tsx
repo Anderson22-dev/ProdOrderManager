@@ -2,7 +2,6 @@
 
 import OrdersTable from "@/components/pages/dashboard/OrdersTable";
 import { api } from "@/shared/services/api";
-import { cookies } from "next/headers";
 import { useEffect, useState } from "react";
 
 // Tipagem para os pedidos
@@ -25,7 +24,7 @@ export default function Dashboard() {
     try {
       const { data: ordersFromApi } = await api.get("/prodOrder", {
         headers: {
-          Authorization: `Bearer ${cookies().get("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       setOrders(ordersFromApi);
