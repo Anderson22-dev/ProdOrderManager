@@ -32,7 +32,6 @@ type ProductType = {
 };
 
 type Order = {
-  ordem: number;
   id: string;
   customer: string;
   product: ProductType;
@@ -48,27 +47,17 @@ export default function OrdersTable() {
 
   async function getOrders() {
     try {
-      const { data: ordersFromApi } = await api.get("/prodOrder/openOrders", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setOrders(ordersFromApi);
-    } catch (error) {
-      console.error("Erro ao buscar os pedidos:", error);
-    }
-    try {
-      const { data: ordersFromApi } = await api.get(
-        "/prodOrder/completeOrders",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setOrders([...orders, ordersFromApi]);
-    } catch (error) {
-      console.error("Erro ao buscar os pedidos:", error);
+      const [ordersFromApi] = await Promise.all([
+        api.get("/prodOrder/openOrders", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }),
+        api.get("/prodOrder/completeOrders", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }),
+      ]);
+      setOrders(ordersFromApi.data);
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -98,10 +87,10 @@ export default function OrdersTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {orders.map((order) => (
-          <TableRow key={order.ordem} className="border">
+        {orders.map((order, index) => (
+          <TableRow key={order.id} className="border">
             <TableCell className="font-medium text-xs border">
-              {order.ordem}
+              {index}
             </TableCell>
             <TableCell className="font-medium text-xs border">
               {order.id}
