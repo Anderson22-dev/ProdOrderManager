@@ -2,7 +2,7 @@
 import { FilePlusIcon, HomeIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { Avatar } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default function Sidebar() {
   return (
@@ -11,22 +11,25 @@ export default function Sidebar() {
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">Empresa XYZ</h1>
         <div className="flex flex-col gap-4">
-          <Button
-            className="w-full flex justify-start gap-2 "
-            variant="ghost"
-            onClick={() => redirect("/dashboard")}
-          >
-            <HomeIcon className="h-5 w-5" />
-            Dashboard
-          </Button>
-          <Button
-            className="w-full flex justify-start gap-2 "
-            variant="ghost"
-            onClick={() => redirect("/create_order")}
-          >
-            <PlusCircledIcon className="h-5 w-5" />
-            Criar Pedido
-          </Button>
+          <Link href={"/dashboard"}>
+            <Button
+              className="w-full flex justify-start gap-2 "
+              variant="ghost"
+            >
+              <HomeIcon className="h-5 w-5" />
+              Dashboard
+            </Button>
+          </Link>
+          <Link href={"/create_order"}>
+            <Button
+              className="w-full flex justify-start gap-2 "
+              variant="ghost"
+            >
+              <PlusCircledIcon className="h-5 w-5" />
+              Criar Pedido
+            </Button>
+          </Link>
+
           <Button className="w-full flex justify-start gap-2 " variant="ghost">
             <FilePlusIcon className="h-5 w-5" />
             Criar Produto
